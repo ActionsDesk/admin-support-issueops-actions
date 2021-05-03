@@ -31,7 +31,7 @@
     "@octokit/plugin-retry": "^3.0.7",
     "@octokit/plugin-throttling": "^3.4.1",
     "@octokit/rest": "^18.3.5",
-    "commander": "^7.1.0",
+    "commander": "^7.2.0",
     "node-notifier": ">=8.0.1",
     "validate.js": "^0.13.1",
     "yaml": "^1.9.2"
