@@ -1,0 +1,48 @@
+name: admin-support-cli
+author: GitHub Professional Services
+description: Action CLI to execute operations against the GitHub Actions API to promote users as admins
+inputs:
+  action:
+    description: 'The command to execute as part of the CLI'
+    required: true
+  admin_token:
+    description: 'The token to be used for the promotion workflow'
+    required: true
+    default: ${{ github.token }}
+  issue_number:
+    description: 'The number of the issue used for this workflow in the repository'
+    required: false
+  username:
+    description: 'The user that will be promoted'
+    required: false
+  target_org:
+    description: 'The organization where we are doing the promotion'
+    required: false
+  role:
+    description: 'The role of the user. Admin or member'
+    required: false
+  duration:
+    description: 'The duration between 1 and 8 hours to grant the permission'
+    required: false
+  ticket:
+    description: 'The ticket where the issue has been reported'
+    required: false
+  description:
+    description: 'The description of the reason why this access has been requested'
+    required: false
+  promotion_date:
+    description: 'The date when the promotion happened'
+    required: false
+  demotion_date:
+    description: 'The date when the demotion happened'
+    required: false
+  run_id:
+    description: 'The id of the current run'
+    required: true
+    default: ${{ github.run_id }}
+outputs:
+  output:
+    description: 'The output of the command executed'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -1,0 +1,97 @@
+name: Promotion workflow
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  promote-workflow:
+    name: Promote @${{ github.event.issue.user.login }} to admin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: automation-running
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Parse the issue submitted
+        id: issue_parser
+        uses: ./admin-support-cli
+        with:
+          action: "parse_issue"
+          issue_number: ${{ github.event.issue.number }}
+
+      - name: Parse issue parser output
+        id: parse_issue_output
+        run: |
+          TARGET_ORG=$(echo ${{toJSON(steps.issue_parser.outputs.output)}} | jq -r .target_org)
+          echo "::set-output name=target_org::$TARGET_ORG"
+
+      - name: Grant admin access
+        id: grant_admin
+        uses: ./admin-support-cli
+        with:
+          action: "promote_demote"
+          username: ${{ github.event.issue.user.login }}
+          target_org: ${{ steps.parse_issue_output.outputs.target_org }}
+          role: 'admin'
+          admin_token: ${{ secrets.PAT }}
+
+      - name: Add a comment on the issue
+        uses: actions/github-script@v3
+        if: success()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ &nbsp; We have executed the request and now the user **@${{github.event.issue.user.login}}** is an admin on ${{steps.parse_issue_output.outputs.target_org}}. When you finish the operations required by the support ticket, close this issue to demote your permissions.
+
+              <sub>
+                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
+              </sub>
+              `
+            })
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: success()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            user-promoted
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: failure()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: |
+            promotion-error
+
+      - name: Close issue if the promotion fails
+        uses: actions/github-script@v3
+        if: failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            })
+            github.issues.lock({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
+
+      - uses: actions-ecosystem/action-remove-labels@v1
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: automation-running

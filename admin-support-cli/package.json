@@ -1,0 +1,60 @@
+{
+  "name": "admin-support",
+  "version": "1.0.0",
+  "description": "Help support teams to handle requests providing temporary admin access",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard --fix",
+    "start": "node src/cli.js",
+    "pack": "ncc build src/action.js -o dist",
+    "test": "jest --coverage && standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github/admin-support"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "JavaScript"
+  ],
+  "author": "GitHub",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/github/admin-support"
+  },
+  "homepage": "https://github.com/github/admin-support",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "@octokit/graphql": "^4.3.1",
+    "@octokit/plugin-retry": "^3.0.7",
+    "@octokit/plugin-throttling": "^3.4.1",
+    "@octokit/rest": "^18.3.5",
+    "commander": "^7.1.0",
+    "node-notifier": ">=8.0.1",
+    "validate.js": "^0.13.1",
+    "yaml": "^1.9.2"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.20.5",
+    "eslint": "^7.21.0",
+    "jest": "^24.9.0",
+    "nock": "^13.0.4",
+    "standard": "^16.0.3"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ],
+    "ignore": [
+      "dist/"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/?(*.)+(spec|test).[j]s?(x)"
+    ]
+  }
+}

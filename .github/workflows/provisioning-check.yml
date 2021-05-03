@@ -1,0 +1,24 @@
+name: Provisioning check to see if a user needs to be demoted
+on:
+  # Uncomment this if you want the check to run every scheduled time
+# Runs once every hour
+#  schedule:
+#    - cron: "0 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+  provisioning-check:
+    name: Close issues with expired duration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run through all the issues and close them if they are expired
+        id: issue_parser
+        uses: ./admin-support-cli
+        with:
+          action: "check_auto_demotion"
+          # Required as otherwise it wouldn't trigger the close webhook on the action
+          admin_token: ${{ secrets.PAT }}
