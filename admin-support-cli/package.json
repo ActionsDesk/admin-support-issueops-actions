@@ -34,7 +34,7 @@
     "commander": "^7.1.0",
     "node-notifier": ">=8.0.1",
     "validate.js": "^0.13.1",
-    "yaml": "^1.9.2"
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
