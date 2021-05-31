@@ -30,7 +30,7 @@
     "@octokit/graphql": "^4.6.2",
     "@octokit/plugin-retry": "^3.0.7",
     "@octokit/plugin-throttling": "^3.4.1",
-    "@octokit/rest": "^18.3.5",
+    "@octokit/rest": "^18.5.5",
     "commander": "^7.1.0",
     "node-notifier": ">=10.0.0",
     "validate.js": "^0.13.1",
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
     "eslint": "^7.27.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.3",
     "nock": "^13.0.4",
     "standard": "^16.0.3"
   },
