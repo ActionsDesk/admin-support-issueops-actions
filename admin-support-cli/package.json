@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "jest": "^27.0.6",
     "nock": "^13.1.1",
     "standard": "^16.0.3"
