@@ -2,7 +2,7 @@ const YAML = require('yaml')
 const fs = require('fs')
 const path = require('path')
 
-function getFileName() {
+function getFileName () {
   return 'config.yml'
 }
 

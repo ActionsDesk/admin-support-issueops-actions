@@ -8,7 +8,7 @@
     "created_at": 1616152082110,
     "head_sha": "fc735d900a069af0831bce62a414001142b5c0d4",
     "conclusion": "success",
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "completed_at": "2021-03-19T11:08:02.000Z",
     "@timestamp": 1616152082110,
     "name": "Manually demote a user",
@@ -26,7 +26,7 @@
     "repo": "test/admin-support",
     "created_at": 1616152044255,
     "head_sha": "fc735d900a069af0831bce62a414001142b5c0d4",
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "@timestamp": 1616152044255,
     "name": "Manually demote a user",
     "action": "workflows.created_workflow_run",
@@ -36,7 +36,7 @@
     "_document_id": "yq-9Kq0OGRPl4DTjSm3rEw"
   },
   {
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "@timestamp": 1616152029858,
     "org": "test",
     "created_at": 1616152029858,
@@ -45,7 +45,7 @@
     "_document_id": "J0slBGdzIq3mrb4NJg791g"
   },
   {
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "@timestamp": 1616151999421,
     "visibility": "public",
     "org": "test",
@@ -62,7 +62,7 @@
     "created_at": 1616151972221,
     "head_sha": "fc735d900a069af0831bce62a414001142b5c0d4",
     "conclusion": "success",
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "completed_at": "2021-03-19T11:06:12.000Z",
     "@timestamp": 1616151972221,
     "name": "Promotion workflow",
@@ -80,7 +80,7 @@
     "repo": "test/admin-support",
     "created_at": 1616151950349,
     "head_sha": "fc735d900a069af0831bce62a414001142b5c0d4",
-    "actor": "droidpl-ghost",
+    "actor": "droidpl",
     "@timestamp": 1616151950349,
     "name": "Promotion workflow",
     "action": "workflows.created_workflow_run",
