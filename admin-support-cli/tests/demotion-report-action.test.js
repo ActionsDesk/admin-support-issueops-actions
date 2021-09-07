@@ -261,7 +261,7 @@ describe('Demotion report', () => {
       replyGithubGetResponse('/orgs/test/audit-log', {
         include: 'all',
         per_page: 100,
-        phrase: 'actor:droidpl'
+        phrase: `created:>=${mockParams.promotionDate} created:<=${mockParams.demotionDate} `
       }, [])
       const action = new DemotionReportAction(apis, mockParams)
       const result = await action.execute()
@@ -291,15 +291,15 @@ describe('Demotion report', () => {
         issueNumber: 1,
         duration: 1,
         ticket: '1234',
-        demotionDate: new Date(Date.parse('2021-02-08T10:20:00Z')),
-        promotionDate: new Date(Date.parse('2021-02-07T10:20:00Z')),
+        demotionDate: new Date(Date.parse('2021-03-19T11:05:50Z')),
+        promotionDate: new Date(Date.parse('2021-03-19T11:08:03Z')),
         targetOrg: 'test',
         reportPath: 'tests/fixtures'
       }
       replyGithubGetResponse('/orgs/test/audit-log', {
         include: 'all',
         per_page: 100,
-        phrase: 'actor:droidpl'
+        phrase: `created:>=${mockParams.promotionDate} created:<=${mockParams.demotionDate} `
       }, () => {
         mockCallback()
         return demotionAuditLog
@@ -313,8 +313,8 @@ describe('Demotion report', () => {
         issueNumber: 1,
         duration: 1,
         ticket: '1234',
-        demotionDate: '2021-02-08T10:20:00.000Z',
-        promotionDate: '2021-02-07T10:20:00.000Z',
+        demotionDate: '2021-03-19T11:05:50.000Z',
+        promotionDate: '2021-03-19T11:08:03.000Z',
         targetOrg: 'test'
       })
       expect(file.auditLogTrail).toEqual(expect.arrayContaining(demotionAuditLog))
