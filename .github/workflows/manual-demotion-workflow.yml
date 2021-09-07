@@ -63,6 +63,10 @@ jobs:
           mkdir -p reports
           ls -Fla
 
+      - name: Sleep to allow audit logs to catch up
+        run: |
+          sleep 30
+
       - name: Report admin operations
         id: report_admin_ops
         uses: ./admin-support-cli
