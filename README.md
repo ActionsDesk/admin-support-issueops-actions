@@ -61,6 +61,7 @@ As this automation provides admin access to organizations, you may only want cer
 g- Set the permissions to this repository to `read` for the teams you want to be able to create issues to upgrade
 - Make sure this repository is has `private` visibility and not `internal`, otherwise everyone in your org will be able to
 create issues in it causing a security concern.
+- Copy the contents from `.github/workflow-templates` to `.github/workflows` so you can start using the templates provided. You can modify them to your needs.
 
 ## Development
 
