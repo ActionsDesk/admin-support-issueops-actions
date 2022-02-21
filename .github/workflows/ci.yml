@@ -1,47 +1,25 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
-
-name: Node.js test an pack
+name: Node.js test
 
 on:
   pull_request:
     branches: [main]
 
-defaults:
-  run:
-    working-directory: admin-support-cli
-
 jobs:
   test:
     name: Run tests
+    
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14
-      - run: npm ci
-      - run: npm test
 
-  check-package-changes:
-    name: Ensure pack has been run 📦
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 14
-          registry-url: https://registry.npmjs.org/
-      - name: Pack results
-        run: |
-          npm ci
-          npm run pack
-      - name: Check for run changes
-        run: |
-          git status --porcelain
-          if [[ `git status --porcelain` ]]; then
-            echo "You forgot running the pack command 🤦!"
-            exit 1
-          else
-            echo "No changes 🎉"
-          fi
+          node-version: 16
+          cache: 'npm'
+
+      - run: npm install --ignore-scripts --pure-lockfile
+
+      - run: npm run build --if-present
+
+      - run: npm run test --if-present
