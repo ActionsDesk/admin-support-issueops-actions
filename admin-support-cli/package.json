@@ -2,13 +2,6 @@
   "name": "admin-support-issueops-actions",
   "version": "1.0.0",
   "description": "Help support teams to handle requests providing temporary admin access",
-  "main": "index.js",
-  "scripts": {
-    "lint": "standard --fix",
-    "start": "node src/cli.js",
-    "pack": "ncc build src/action.js -o dist",
-    "test": "jest --coverage && standard"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ActionsDesk/admin-support-issueops-actions"
@@ -22,6 +15,14 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ActionsDesk/admin-support-issueops-actions"
+  "main": "index.js",
+  "scripts": {
+    "prepare": "cd .. && husky install ./.github/husky",
+    "prebuild": "rimraf dist",
+    "build": "ncc build src/action.js --out dist --license licenses.txt --quiet",
+    "format": "standard --fix",
+    "start": "node src/cli.js",
+    "test": "standard && jest --coverage"
   },
   "homepage": "https://github.com/ActionsDesk/admin-support-issueops-actions",
   "dependencies": {
@@ -42,6 +43,7 @@
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "nock": "^13.2.4",
+    "rimraf": "^3.0.2",
     "standard": "^16.0.4"
   },
   "husky": {
@@ -50,18 +52,18 @@
       "pre-push": "./.github/husky/pre-push"
     }
   },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/?(*.)+(spec|test).[j]s?(x)"
+    ]
+  },
   "standard": {
     "env": [
       "jest"
     ],
     "ignore": [
       "dist/"
-    ]
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/?(*.)+(spec|test).[j]s?(x)"
     ]
   }
 }
