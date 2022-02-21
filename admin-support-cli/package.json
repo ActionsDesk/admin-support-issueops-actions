@@ -25,20 +25,20 @@
   },
   "homepage": "https://github.com/ActionsDesk/admin-support-issueops-actions",
   "dependencies": {
-    "@actions/core": "^1.5.0",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "@octokit/graphql": "^4.8.0",
     "@octokit/plugin-retry": "^3.0.9",
     "@octokit/plugin-throttling": "^3.5.2",
     "commander": "^9.0.0",
-    "@octokit/rest": "^18.10.0",
+    "@octokit/rest": "^18.12.0",
     "node-notifier": ">=10.0.1",
     "validate.js": "^0.13.1",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.20.5",
-    "eslint": "^7.32.0",
+    "@vercel/ncc": "^0.33.3",
+    "eslint": "^8.9.0",
     "jest": "^27.5.1",
     "nock": "^13.2.4",
     "standard": "^16.0.4"
