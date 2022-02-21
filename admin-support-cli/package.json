@@ -2,19 +2,38 @@
   "name": "admin-support-issueops-actions",
   "version": "1.0.0",
   "description": "Help support teams to handle requests providing temporary admin access",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ActionsDesk/admin-support-issueops-actions"
-  },
   "keywords": [
     "GitHub",
     "Actions",
     "JavaScript"
   ],
-  "author": "GitHub",
+  "author": {
+    "name": "GitHub Professional Services",
+    "email": "services@github.com",
+    "url": "https://services.github.com"
+  },
+  "contributors": [
+    {
+      "name": "Javier de Pedro López",
+      "url": "https://github.com/droidpl"
+    },
+    {
+      "name": "Steve Norman",
+      "email": "steve.norman@refinitiv.com",
+      "url": "https://github.com/steve-norman-rft"
+    },
+    {
+      "name": "Stefan Stölzle",
+      "email": "stoe@github.com",
+      "url": "https://github.com/stoe"
+    }
+  ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ActionsDesk/admin-support-issueops-actions"
+  "repository": "github:ActionsDesk/admin-support-issueops-actions",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
   "main": "index.js",
   "scripts": {
     "prepare": "cd .. && husky install ./.github/husky",
@@ -24,7 +43,6 @@
     "start": "node src/cli.js",
     "test": "standard && jest --coverage"
   },
-  "homepage": "https://github.com/ActionsDesk/admin-support-issueops-actions",
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
