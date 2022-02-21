@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
 
+defaults:
+  run:
+    working-directory: admin-support-cli
+
 jobs:
   test:
     name: Run tests
@@ -17,6 +21,7 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+          cache-dependency-path: admin-support-cli/package-lock.json
 
       - run: npm install --ignore-scripts --pure-lockfile
 
