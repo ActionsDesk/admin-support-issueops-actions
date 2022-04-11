@@ -34,7 +34,7 @@
     "@octokit/rest": "^18.10.0",
     "node-notifier": ">=10.0.1",
     "validate.js": "^0.13.1",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
