@@ -29,7 +29,7 @@
     "@actions/github": "^5.0.1",
     "@octokit/graphql": "^4.8.0",
     "@octokit/plugin-retry": "^3.0.9",
-    "@octokit/plugin-throttling": "^3.5.2",
+    "@octokit/plugin-throttling": "^3.6.2",
     "commander": "^9.1.0",
     "@octokit/rest": "^18.10.0",
     "node-notifier": ">=10.0.1",
