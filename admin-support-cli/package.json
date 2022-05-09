@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "eslint": "^8.14.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.0",
     "jest": "^28.0.3",
     "nock": "^13.2.4",
     "rimraf": "^3.0.2",
