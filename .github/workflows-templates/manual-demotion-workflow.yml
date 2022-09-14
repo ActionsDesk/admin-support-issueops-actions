@@ -17,7 +17,7 @@ jobs:
           labels: automation-running
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # This token is required push changes later
           token: ${{ secrets.PAT }}
@@ -92,12 +92,12 @@ jobs:
           push: true
 
       - name: Add a comment on the issue to confirm the demotion
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: success()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            await github.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -108,19 +108,19 @@ jobs:
               </sub>
               `
             })
-            await github.issues.lock({
+            await github.rest.issues.lock({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo
             })
 
       - name: Add a comment to notify the team that this automation failed
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            await github.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
