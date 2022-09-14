@@ -77,7 +77,7 @@ Options:
   -t, --admin-token <string>    the token to access the API (mandatory)
   -a, --action <string>         the action to be executed
    
-  action: parse-issue           Parse the body of an issue
+  action: parse_issue           Parse the body of an issue
   -i, --issue-number <number>   the issue number where we are executing the operation
    
   action: promote_demote        Promote user to admin or demote to member
