@@ -15,7 +15,7 @@ jobs:
           labels: automation-running
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Parse the issue submitted
         id: issue_parser
@@ -41,12 +41,12 @@ jobs:
           admin_token: ${{ secrets.PAT }}
 
       - name: Add a comment on the issue
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: success()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -73,18 +73,18 @@ jobs:
             promotion-error
 
       - name: Close issue if the promotion fails
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         if: failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.update({
+            github.rest.issues.update({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'closed'
             })
-            github.issues.lock({
+            github.rest.issues.lock({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo
