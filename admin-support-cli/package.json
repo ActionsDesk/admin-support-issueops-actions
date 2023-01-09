@@ -34,7 +34,7 @@
     "@octokit/plugin-throttling": "^4.3.0",
     "@octokit/rest": "^19.0.4",
     "@vercel/ncc": "^0.34.0",
-    "commander": "^9.4.0",
+    "commander": "^9.5.0",
     "node-notifier": ">=10.0.1",
     "validate.js": "^0.13.1",
     "yaml": "^2.1.3"
