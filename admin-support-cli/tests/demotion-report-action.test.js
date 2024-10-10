@@ -241,9 +241,10 @@ describe('Demotion report', () => {
       try {
         fs.unlinkSync(path.join(__dirname, '/fixtures/1_droidpl.json'))
       } catch (e) {
-        // No mater if this the file doesn't exist always
+        // No matter if this the file doesn't exist always
       }
     })
+
     test('execute() - Check report generated with empty audit log entries', async () => {
       const apis = mockApis()
       const mockParams = {
@@ -258,6 +259,7 @@ describe('Demotion report', () => {
         targetOrg: 'test',
         reportPath: 'tests/fixtures'
       }
+
       replyGithubGetResponse('/orgs/test/audit-log', {
         include: 'all',
         per_page: 100,

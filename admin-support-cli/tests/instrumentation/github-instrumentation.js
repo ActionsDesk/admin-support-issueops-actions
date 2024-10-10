@@ -1,4 +1,5 @@
-const nock = require('nock')
+const fetchMock = require('fetch-mock-jest');
+
 const { buildV3Octokit, buildV4Octokit } = require('../../src/utils/api-builder')
 
 const GITHUB_URL = 'https://api.github.com'
@@ -6,34 +7,35 @@ const GITHUB_URL = 'https://api.github.com'
 module.exports = {
   githubUrl: GITHUB_URL,
   githubInstrumentation: () => {
-    nock.disableNetConnect()
-    // Used for supertest and the local server
-    nock.enableNetConnect('127.0.0.1')
-
     // Remove all log implementations
     jest.spyOn(console, 'error').mockImplementation(() => {})
     jest.spyOn(console, 'warn').mockImplementation(() => {})
     jest.spyOn(console, 'log').mockImplementation(() => {})
   },
   replyGithubResponse: (path, interceptor) => {
-    nock(GITHUB_URL)
-      .post(path)
-      .reply(200, interceptor)
+    fetchMock.post(`${GITHUB_URL}${path}`, {
+      status: 200,
+      body: interceptor
+    });
   },
   replyGithubGetResponse: (path, params, interceptor) => {
-    nock(GITHUB_URL)
-      .get(path)
-      .query(params || true)
-      .reply(200, interceptor)
+    const url = new URL(`${GITHUB_URL}${path}`);
+    if (params) {
+      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+    }
+    fetchMock.get(url.toString(), {
+      status: 200,
+      body: interceptor
+    });
   },
   replyGithubPatchResponse: (path, interceptor) => {
-    nock(GITHUB_URL)
-      .patch(path)
-      .reply(200, interceptor)
+    fetchMock.patch(`${GITHUB_URL}${path}`, {
+      status: 200,
+      body: interceptor
+    });
   },
   githubInstrumentationTeardown: () => {
-    nock.cleanAll()
-    nock.enableNetConnect()
+    fetchMock.restore();
   },
   /* eslint-disable */
   getOctokit: () => {

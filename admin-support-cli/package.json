@@ -8,8 +8,8 @@
     "lint": "standard --fix",
     "prebuild": "rimraf dist",
     "prepare": "cd .. && husky install ./.github/husky",
-    "start": "node src/cli.js",
-    "test": "jest --coverage && standard"
+    "start": "node --no-experimental-fetch src/cli.js",
+    "test": "jest --verbose --coverage && standard"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "eslint": "^8.25.0",
+    "fetch-mock": "^11.1.5",
+    "fetch-mock-jest": "^1.5.1",
     "husky": "^8.0.1",
     "jest": "^28.1.3",
     "nock": "^13.2.9",
