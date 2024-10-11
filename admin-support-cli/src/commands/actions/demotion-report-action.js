@@ -52,7 +52,7 @@ class DemotionReportAction extends Command {
         org: this.params.targetOrg,
         include: 'all',
         per_page: 100,
-        phrase: `created:>=${report.promotionDate} created:<=${report.demotionDate} `
+        phrase: `created:${report.promotionDate}..${report.demotionDate}`
       })) {
         // Filter only the events that happened from the moment the issue was opened to the present
         const data = request.data

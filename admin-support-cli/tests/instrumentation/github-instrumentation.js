@@ -23,7 +23,7 @@ module.exports = {
     if (params) {
       Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     }
-    fetchMock.get(url.toString(), {
+    fetchMock.get(url, {
       status: 200,
       body: interceptor
     });
