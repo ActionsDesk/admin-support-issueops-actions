@@ -1,4 +1,4 @@
-const fetchMock = require('fetch-mock-jest');
+const fetchMock = require('fetch-mock-jest')
 
 const { buildV3Octokit, buildV4Octokit } = require('../../src/utils/api-builder')
 
@@ -16,26 +16,26 @@ module.exports = {
     fetchMock.post(`${GITHUB_URL}${path}`, {
       status: 200,
       body: interceptor
-    });
+    })
   },
   replyGithubGetResponse: (path, params, interceptor) => {
-    const url = new URL(`${GITHUB_URL}${path}`);
+    const url = new URL(`${GITHUB_URL}${path}`)
     if (params) {
-      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     }
     fetchMock.get(url, {
       status: 200,
       body: interceptor
-    });
+    })
   },
   replyGithubPatchResponse: (path, interceptor) => {
     fetchMock.patch(`${GITHUB_URL}${path}`, {
       status: 200,
       body: interceptor
-    });
+    })
   },
   githubInstrumentationTeardown: () => {
-    fetchMock.restore();
+    fetchMock.restore()
   },
   /* eslint-disable */
   getOctokit: () => {

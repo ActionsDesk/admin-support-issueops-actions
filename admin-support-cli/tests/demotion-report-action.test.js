@@ -281,10 +281,10 @@ describe('Demotion report', () => {
       })
       expect(file.auditLogTrail).toEqual(expect.arrayContaining([]))
       expect(result.status).toBe('success')
+      expect.assertions(3)
     })
 
     test('execute() - Check report generated with audit log entries', async () => {
-      const mockCallback = jest.fn()
       const apis = mockApis()
       const mockParams = {
         username: 'droidpl',
@@ -302,10 +302,7 @@ describe('Demotion report', () => {
         include: 'all',
         per_page: 100,
         phrase: `created:${mockParams.promotionDate}..${mockParams.demotionDate}`
-      }, () => {
-        mockCallback()
-        return demotionAuditLog
-      })
+      }, demotionAuditLog)
       const action = new DemotionReportAction(apis, mockParams)
       const result = await action.execute()
       const file = JSON.parse(fs.readFileSync(path.join(__dirname, '/fixtures/1_droidpl.json')))
@@ -315,13 +312,13 @@ describe('Demotion report', () => {
         issueNumber: 1,
         duration: 1,
         ticket: '1234',
-        demotionDate: '2021-03-19T11:05:50.000Z',
-        promotionDate: '2021-03-19T11:08:03.000Z',
+        demotionDate: '2021-03-19T11:05:50Z',
+        promotionDate: '2021-03-19T11:08:03Z',
         targetOrg: 'test'
       })
       expect(file.auditLogTrail).toEqual(expect.arrayContaining(demotionAuditLog))
-      expect(mockCallback).toBeCalled()
       expect(result.status).toBe('success')
+      expect.assertions(3)
     })
   })
 })
