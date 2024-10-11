@@ -104,12 +104,13 @@ describe('Check auto demotion', () => {
       replyGithubGetResponse('/repos/test/test/issues/1', null, issueOpenedMock)
       replyGithubPatchResponse('/repos/test/test/issues/1', (_, req) => {
         expect(req.state).toBe('closed')
+        expect.assertions(1)
         return { ...issueOpenedMock, status: 'closed' }
       })
       const action = new CheckAutoDemotionAction(apis, mockParams)
       const result = await action.execute()
       expect(result.status).toBe('success')
-      expect.assertions(2)
+      expect.assertions(1)
     })
 
     test('execute() - Issue is not closed if the duration is smaller than the current time passed', async () => {
