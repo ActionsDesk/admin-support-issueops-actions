@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/ActionsDesk/admin-support-issueops-actions",
   "dependencies": {
-    "@actions/core": "^1.9.1",
+    "@actions/core": "^1.11.1",
     "@actions/github": "^5.1.1",
     "@octokit/graphql": "^5.0.1",
     "@octokit/plugin-retry": "^3.0.9",
