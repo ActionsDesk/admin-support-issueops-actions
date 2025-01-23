@@ -72,7 +72,7 @@ To setup this repository in your organization, follow the below steps:
 1. In your cloned repository, create a
    [GitHub Actions secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
    named `PAT` using the token you created previously
-1. Rename [`config.example.yml`](./config.example.yml) to `config.yml`
+1. Rename [`config.example.yml`](./admin-support-cli/config.example.yml) to `config.yml`
 1. Update the following properties in `config.yml`
 
    | Property        | Description                                              |
