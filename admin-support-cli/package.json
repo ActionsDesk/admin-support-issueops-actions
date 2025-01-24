@@ -41,6 +41,7 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "@github/issue-parser": "^1.0.1",
     "commander": "^13.1.0",
     "ts-dedent": "^2.2.0"
   },
