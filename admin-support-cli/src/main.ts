@@ -15,7 +15,8 @@ export async function run() {
   const inputs = getInputs()
 
   try {
-    console.log(`Params: ${JSON.stringify(inputs)}`)
+    core.info('Running Action with input:')
+    core.info(JSON.stringify(inputs, null, 2))
 
     let commandInstance: Command | undefined
     switch (inputs.action) {
@@ -36,6 +37,9 @@ export async function run() {
     const result = await commandInstance.execute()
 
     core.setOutput('output', result.output)
+
+    if (inputs.parsedIssue?.organization)
+      core.setOutput('organization', inputs.parsedIssue.organization)
   } catch (error: any) {
     core.error(error)
 

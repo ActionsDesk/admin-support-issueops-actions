@@ -11,10 +11,10 @@ export function getInputs(): Inputs {
     .split(/,\s?/)
 
   /** Optional Inputs */
-  const demotionDate = core.getInput('demotionDate')
+  const demotionDate = core.getInput('demotion_date')
   const issueNumber = core.getInput('issue_number')
   const parsedIssue = core.getInput('parsed_issue')
-  const promotionDate = core.getInput('promotionDate')
+  const promotionDate = core.getInput('promotion_date')
   const reportPath = core.getInput('report_path')
   const role = core.getInput('role').toLowerCase()
   const username = core.getInput('username')

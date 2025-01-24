@@ -64,11 +64,6 @@ jobs:
           DEMOTION_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "::set-output name=demotion_date::$DEMOTION_DATE"
 
-      - name: Create Reports Directory
-        id: create-directory
-        run: |
-          mkdir -p reports
-
       # This is required to allow the audit logs to catch up.
       - name: Sleep
         id: sleep
@@ -98,6 +93,10 @@ jobs:
             github.event.issue.user.login }}'
           push: true
 
+      ##################################################################
+      # The following steps should be run if the action was successful.
+      ##################################################################
+
       - if: ${{ success() }}
         name: Add a Comment
         id: add-comment
@@ -111,7 +110,7 @@ jobs:
               repo: context.repo.repo,
               body: `### :white_check_mark: Request Complete
 
-              The user **@${{github.event.issue.user.login}}**'s temporary admin access has been revoked has been demoted from ${{ steps.grant.outputs.organization }}.
+              The user **@${{github.event.issue.user.login}}**'s temporary admin access has been revoked has been demoted from ${{ steps.revoke.outputs.organization }}.
 
               This issue will be locked to avoid new interactions.
 
@@ -125,28 +124,6 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo
-            })
-
-      - if: ${{ failure() }}
-        name: Notify the Team
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `### :x: Demotion Failed
-
-              CC: ${{ env.DEMOTION_ERROR_NOTIFY }}
-
-              Please investigate to ensure the user's access has been correctly revoked.
-
-              <sub>
-                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
-              </sub>
-              `
             })
 
       # Add a label to indicate that the user has been demoted.
@@ -171,6 +148,36 @@ jobs:
           labels: |
             user-promoted
             automation-running
+
+      ##################################################################
+      # The following steps should be run if the action failed.
+      ##################################################################
+
+      - if: ${{ failure() }}
+        name: Notify the Team
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### :x: Demotion Failed
+
+              CC: ${{ env.DEMOTION_ERROR_NOTIFY }}
+
+              Please investigate to ensure the user's access has been correctly revoked.
+
+              <sub>
+                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
+              </sub>
+              `
+            })
+
+      ##################################################################
+      # The following steps should always run.
+      ##################################################################
 
       # Remove the automation label.
       - if: ${{ always() }}

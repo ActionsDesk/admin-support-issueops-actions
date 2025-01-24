@@ -61,7 +61,9 @@ jobs:
           echo "Validation Result: ${{ steps.validate.outputs.result }}"
           echo "Validation Errors: ${{ steps.validate.outputs.errors }}"
 
+      ###############################################################
       # Only run the following steps if the validation is successful.
+      ###############################################################
 
       # Grand administrative access by calling this action.
       - if: ${{ steps.validate.output.result == 'success' }}
@@ -108,7 +110,9 @@ jobs:
           labels: |
             user-promoted
 
+      ###############################################################
       # The following steps should only be run if the action fails.
+      ###############################################################
 
       # Add a label to indicate that the promotion failed.
       - if: ${{ failure() }}
@@ -121,7 +125,9 @@ jobs:
           labels: |
             promotion-error
 
+      ###############################################################
       # The following steps should always run.
+      ###############################################################
 
       # Remove the label added previously.
       - if: ${{ always() }}
