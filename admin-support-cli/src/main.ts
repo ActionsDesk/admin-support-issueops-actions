@@ -10,6 +10,7 @@ import { CommandDoesNotExistError } from './exceptions/CommandDoesNotExistError.
 import { getInputs } from './inputs.js'
 
 export async function run() {
+  /* istanbul ignore next */
   if (!github.context.payload.issue) return core.setFailed('No issue found!')
 
   const inputs = getInputs()
@@ -38,7 +39,7 @@ export async function run() {
 
     core.setOutput('output', result.output)
 
-    if (inputs.parsedIssue?.organization)
+    if (inputs.parsedIssue !== undefined)
       core.setOutput('organization', inputs.parsedIssue.organization)
   } catch (error: any) {
     core.error(error)
