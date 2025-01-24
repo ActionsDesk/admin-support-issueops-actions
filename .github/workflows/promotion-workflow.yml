@@ -69,7 +69,7 @@ jobs:
       - if: ${{ steps.validate.output.result == 'success' }}
         name: Grant Admin Access
         id: grant
-        uses: admin-support-issueops-actions/admin-support-cli@v2
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
         with:
           action: promote_demote
           allowed_orgs: ${{ env.ALLOWED_ORGS }}

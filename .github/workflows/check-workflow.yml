@@ -28,7 +28,7 @@ jobs:
 
       - name: Check for Users to Demote
         id: check-demote
-        uses: admin-support-issueops-actions/admin-support-cli@v2
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
         with:
           action: check_auto_demotion
           admin_token: ${{ secrets.PAT }}

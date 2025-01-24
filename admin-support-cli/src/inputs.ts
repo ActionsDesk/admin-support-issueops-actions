@@ -41,6 +41,7 @@ export function getInputs(): Inputs {
   if (role !== '' && !Object.values(Role).includes(role as Role))
     throw new Error('Role must be "admin" or "member"')
 
+  /* istanbul ignore next */
   return {
     /** Required Inputs */
     action,

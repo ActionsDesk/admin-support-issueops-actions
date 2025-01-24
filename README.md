@@ -6,6 +6,8 @@ temporary elevation of their access to perform tasks that require administrative
 permission. All the operations done during the process are reported as part of
 the audit log of the user. Closing the issue removes the permission.
 
+[![Code Coverage](./badges/coverage.svg)](./badges/coverage.svg)
+
 ## Setup
 
 To use this action in your own organization(s), follow the below steps:

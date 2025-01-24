@@ -49,7 +49,7 @@ jobs:
 
       - name: Revoke Admin Access
         id: revoke
-        uses: admin-support-issueops-actions/admin-support-cli@v2
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
         with:
           action: promote_demote
           admin_token: ${{ secrets.PAT }}
@@ -72,7 +72,7 @@ jobs:
 
       - name: Generate Report
         id: generate-report
-        uses: admin-support-issueops-actions/admin-support-cli@v2
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
         with:
           action: demotion_report
           admin_token: ${{ secrets.PAT }}

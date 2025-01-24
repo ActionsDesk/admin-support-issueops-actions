@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import * as github from '@actions/github'
 import type { GitHub } from '@actions/github/lib/utils.js'
 import { dedent } from 'ts-dedent'
@@ -42,11 +43,11 @@ export class PromoteDemoteAction implements Command {
         output: `The role of ${this.params.username} has been successfully changed to: ${this.params.role} in ${this.params.parsedIssue!.organization}`
       }
     } catch (error: any) {
-      console.error(
+      core.error(
         `Failed to change the role of ${this.params.username} in ${this.params.parsedIssue!.organization}`
       )
-      console.error(`Status Code: ${error.status}`)
-      console.error(dedent`Possible reasons:
+      core.error(`Status Code: ${error.status}`)
+      core.error(dedent`Possible reasons:
 
       - Username is not a member of the organization
       - Personal access token provided does not have sufficient privileges

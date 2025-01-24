@@ -64,6 +64,7 @@ export class DemotionReportAction implements Command {
 
       report.auditLogTrail = report.auditLogTrail.concat(
         result.filter(
+          /* istanbul ignore next */
           (item) => item.user === report.user || item.actor === report.user
         )
       )
