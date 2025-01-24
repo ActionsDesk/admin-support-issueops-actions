@@ -13,4 +13,5 @@ export default async (field) => {
   // Check if the number is between 1 and 8.
   if (parseInt(field) < 1 || parseInt(field) > 8)
     return 'Duration must be between 1 and 8'
+  return 'success'
 }

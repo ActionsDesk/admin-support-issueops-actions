@@ -17,7 +17,7 @@ body:
     attributes:
       label: Description
       description:
-        Expanation of why this request is being submitted and what task(s) will
+        Explanation of why this request is being submitted and what task(s) will
         be performed
     validations:
       required: true
