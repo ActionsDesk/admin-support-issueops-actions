@@ -1,10 +1,9 @@
 name: Demote a User
 
-# TODO: Uncomment the below lines to enable this workflow.
-# on:
-#   issues:
-#     types:
-#       - closed
+on:
+  issues:
+    types:
+      - closed
 
 permissions:
   contents: write

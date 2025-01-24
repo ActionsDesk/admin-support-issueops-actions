@@ -25,10 +25,14 @@ To use this action in your own organization(s), follow the below steps:
 1. In your cloned repository, create a
    [GitHub Actions secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
    named `PAT` using the token you created previously
-1. Uncomment the `on` properties in the following workflow files:
+1. Move the following workflow files from the `.github/workflow-examples/`
+   directory to the `.github/workflows/` directory:
    - [`check-workflow.yml`](./.github/workflows/check-workflow.yml)
    - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
    - [`promotion-workflow.yml`](./.github/workflows/promotion-workflow.yml)
+1. Update the `DEMOTION_ERROR_NOTIFY` environment variable in the following
+   workflow files:
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
 1. Update the `ALLOWED_ORGS` environment variable in the following workflow
    files:
 

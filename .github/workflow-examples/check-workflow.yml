@@ -1,10 +1,9 @@
 name: Check for Users to Demote
 
-# TODO: Uncomment the below lines to enable this workflow.
-# on:
-#   schedule:
-#     - cron: '0 * * * *' # Run once every hour.
-#   workflow_dispatch:
+on:
+  schedule:
+    - cron: '0 * * * *' # Run once every hour.
+  workflow_dispatch:
 
 permissions:
   contents: write

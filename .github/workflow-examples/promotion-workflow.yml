@@ -1,11 +1,10 @@
 name: Promotion Workflow
 
-# TODO: Uncomment the below lines to enable this workflow.
-# on:
-#   issues:
-#     types:
-#       - opened
-#       - edited
+on:
+  issues:
+    types:
+      - opened
+      - edited
 
 permissions:
   contents: write
