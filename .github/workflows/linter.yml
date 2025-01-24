@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    working-directory: admin-support-cli
+
 permissions:
   contents: read
   packages: read
