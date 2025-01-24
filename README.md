@@ -8,6 +8,21 @@ the audit log of the user. Closing the issue removes the permission.
 
 [![Code Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
+## v2 Migration
+
+There are a number of major changes in the v2 release of this action.
+Specifically:
+
+- The CLI component has been removed in favor of using the
+  [`@github/local-action`](https://github.com/github/local-action) utility
+- The action is now using Node.js v20
+- The action inputs have been updated to not require multiple runs to parse and
+  then invoke the correct command
+
+When migrating, please refer to the
+[example workflows](./.github/workflow-examples) for the correct usage of the
+action.
+
 ## Setup
 
 To use this action in your own organization(s), follow the below steps:
