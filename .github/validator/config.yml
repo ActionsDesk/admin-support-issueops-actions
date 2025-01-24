@@ -1,0 +1,5 @@
+validators:
+  - field: organization
+    script: organization.js
+  - field: duration
+    script: duration.js

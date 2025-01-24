@@ -6,9 +6,57 @@ temporary elevation of their access to perform tasks that require administrative
 permission. All the operations done during the process are reported as part of
 the audit log of the user. Closing the issue removes the permission.
 
-## Automation
+## Setup
 
-### Instructions
+To use this action in your own organization(s), follow the below steps:
+
+1. Create a
+   [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
+   with `admin:org` and `repo` write permissions
+
+   > [!NOTE]
+   >
+   > It is **highly** recommended to use a machine user for this purpose, not a
+   > personal account.
+
+1. Clone this repository into your organization
+1. In your cloned repository, create a
+   [GitHub Actions secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
+   named `PAT` using the token you created previously
+1. Uncomment the `on` properties in the following workflow files:
+   - [`check-workflow.yml`](./.github/workflows/check-workflow.yml)
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
+   - [`promotion-workflow.yml`](./.github/workflows/promotion-workflow.yml)
+1. Update the `ALLOWED_ORGS` environment variable in the following workflow
+   files:
+
+   - [`check-workflow.yml`](./.github/workflows/check-workflow.yml)
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
+   - [`promotion-workflow.yml`](./.github/workflows/promotion-workflow.yml)
+
+   This should be see to a comma-separated list of the organizations where you
+   want to allow to use this automation (and the `PAT` you created can acess)
+
+   ```yaml
+   env:
+     ALLOWED_ORGS: 'octo-org,octo-org2'
+   ```
+
+1. Commit and push the changes to your repository
+1. [Enable GitHub Actions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
+   in the repository
+
+   As this automation provides admin access to organizations, you may only want
+   certain teams to be able to fill issues in.
+
+1. Enable
+   [repositorty rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
+   so only certain users can access the repository
+1. Grant `read` permission to any users or teams who will need to be able to
+   create issues in the repository
+1. Set the repository visibility to `private`, not `internal`
+
+## Automation
 
 To request the permission:
 
@@ -54,49 +102,6 @@ To request the permission:
 >
 > The duration requested will be approximate and has a ~1h error. We recommend
 > to close the issue when the task is completed.
-
-## Setup
-
-To setup this repository in your organization, follow the below steps:
-
-1. Create a
-   [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
-   with `admin:org` and `repo` write permissions
-
-   > [!NOTE]
-   >
-   > It is **highly** recommended to use a machine user for this purpose, not a
-   > personal account.
-
-1. Clone this repository into your organization
-1. In your cloned repository, create a
-   [GitHub Actions secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
-   named `PAT` using the token you created previously
-1. Rename [`config.example.yml`](./admin-support-cli/config.example.yml) to `config.yml`
-1. Update the following properties in `config.yml`
-
-   | Property        | Description                                              |
-   | --------------- | -------------------------------------------------------- |
-   | `org`           | Your organization name                                   |
-   | `repository`    | The name of your cloned repository                       |
-   | `supportedOrgs` | The organization(s) where the provided `PAT` can be used |
-   | `reportPath`    | The path in your repository where reports will be stored |
-
-1. Uncomment the `schedule` property in the
-   [`provisioning-check.yml`](./.github/workflows/provisioning-check.yml)
-   workflow file
-1. [Enable GitHub Actions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
-   in the repository
-
-As this automation provides admin access to organizations, you may only want
-certain teams to be able to fill issues in.
-
-1. Enable
-   [repositorty rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
-   so only certain users can access the repository
-1. Grant `read` permission to any users or teams who will need to be able to
-   create issues in the repository
-1. Set the repository visibility to `private`, not `internal`
 
 ## Development
 
