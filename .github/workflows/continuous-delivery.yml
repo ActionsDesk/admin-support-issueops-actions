@@ -32,7 +32,7 @@ jobs:
         id: tag
         uses: issue-ops/semver@v2
         with:
-          manifest-path: package.json
+          manifest-path: admin-support-cli/package.json
           workspace: ${{ github.workspace }}
           ref: main
 
