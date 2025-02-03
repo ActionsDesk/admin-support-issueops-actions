@@ -1,0 +1,47 @@
+name: Request Administrative Access
+description:
+  Allows the support team to request a temporary admin permission in an
+  organization
+title: Administrative Access Request
+body:
+  - type: input
+    id: organization
+    attributes:
+      label: Organization
+      description: Organization where you want to be promoted
+      placeholder: octo-org
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description:
+        Explanation of why this request is being submitted and what task(s) will
+        be performed
+    validations:
+      required: true
+  - type: input
+    id: ticket
+    attributes:
+      label: Ticket
+      description: ID of a related ticket in your support system
+    validations:
+      required: true
+  - type: dropdown
+    id: duration
+    attributes:
+      label: Duration
+      description: Duration in hours that you need the permission
+      multiple: false
+      options:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+        - '6'
+        - '7'
+        - '8'
+    validations:
+      required: true

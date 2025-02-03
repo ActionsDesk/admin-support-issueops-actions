@@ -1,48 +1,48 @@
 name: admin-support-cli
-author: GitHub Professional Services
-description: Action CLI to execute operations against the GitHub Actions API to promote users as admins
+author: GitHub Expert Services
+description: CLI to promote users as admins in a GitHub organization
 inputs:
   action:
-    description: 'The command to execute as part of the CLI'
+    description:
+      Command to invoke as part of the CLI (`check_auto_demotion`,
+      `demotion_report`, `promote_demote`)
     required: true
   admin_token:
-    description: 'The token to be used for the promotion workflow'
+    description: Token to be used for the promotion workflow
     required: true
-    default: ${{ github.token }}
+  allowed_orgs:
+    description:
+      Comma-separated list of allowed organizations (e.g. `org1,org2,org3`).
+    required: true
+  demotion_date:
+    description: Date when the demotion happened
+    required: false
   issue_number:
-    description: 'The number of the issue used for this workflow in the repository'
+    description: Promotion request issue number
     required: false
-  username:
-    description: 'The user that will be promoted'
-    required: false
-  target_org:
-    description: 'The organization where we are doing the promotion'
-    required: false
-  role:
-    description: 'The role of the user. Admin or member'
-    required: false
-  duration:
-    description: 'The duration between 1 and 8 hours to grant the permission'
-    required: false
-  ticket:
-    description: 'The ticket where the issue has been reported'
-    required: false
-  description:
-    description: 'The description of the reason why this access has been requested'
+    default: ${{ github.event.issue.number }}
+  parsed_issue:
+    description: Parsed issue JSON
     required: false
   promotion_date:
-    description: 'The date when the promotion happened'
+    description: Date when the promotion happened
     required: false
-  demotion_date:
-    description: 'The date when the demotion happened'
+    default: ${{ github.event.issue.created_at }}
+  report_path:
+    description: Path where the report will be saved
     required: false
-  run_id:
-    description: 'The id of the current run'
-    required: true
-    default: ${{ github.run_id }}
+    default: ${{ github.workspace }}/reports
+  role:
+    description: Role to grant (`admin` or `member`)
+    required: false
+  username:
+    description: User that will be promoted
+    required: false
+    default: ${{ github.actor }}
+
 outputs:
   output:
-    description: 'The output of the command executed'
+    description: Command output
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node20
+  main: dist/index.js

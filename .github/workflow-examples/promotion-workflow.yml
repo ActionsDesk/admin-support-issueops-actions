@@ -1,0 +1,140 @@
+name: Promotion Workflow
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  # TODO: Change this to the organization(s) that you support.
+  ALLOWED_ORGS: org1,org2
+
+jobs:
+  promote:
+    name: Promote @${{ github.event.issue.user.login }} to Admin
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository. This is required to access the issue form
+      # template and any custom validation logic.
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      # Add a label to indicate that the automation is running.
+      - name: Add Running Label
+        id: add-running-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: add
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            automation-running
+
+      # Parse the issue body into JSON.
+      - name: Parse Issue
+        id: parser
+        uses: issue-ops/parser@v4
+        with:
+          body: ${{ github.event.issue.body }}
+          issue-form-template: request_admin_permissions.yml
+          workspace: ${{ github.workspace }}
+
+      # Validate the parsed issue body against the issue form template.
+      - name: Validate Issue
+        id: validate
+        uses: issue-ops/validator@v3
+        with:
+          issue-form-template: example-request.yml
+          parsed-issue-body: ${{ steps.parse.outputs.json }}
+          workspace: ${{ github.workspace }}
+
+      - name: Output Validation Results
+        id: output
+        run: |
+          echo "Validation Result: ${{ steps.validate.outputs.result }}"
+          echo "Validation Errors: ${{ steps.validate.outputs.errors }}"
+
+      ###############################################################
+      # Only run the following steps if the validation is successful.
+      ###############################################################
+
+      # Grand administrative access by calling this action.
+      - if: ${{ steps.validate.output.result == 'success' }}
+        name: Grant Admin Access
+        id: grant
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
+        with:
+          action: promote_demote
+          allowed_orgs: ${{ env.ALLOWED_ORGS }}
+          admin_token: ${{ secrets.PAT }}
+          parsed_issue: ${{ steps.parser.outputs.json }}
+          role: admin
+          username: ${{ github.event.issue.user.login }}
+
+      - if: ${{ steps.validate.output.result == 'success' }}
+        name: Add a Comment
+        id: add-comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### :white_check_mark: Request Complete
+
+              The user **@${{ github.event.issue.user.login }}** has been granted temporary admin access to ${{ steps.grant.outputs.organization }}. When you finish your administrative tasks, please close this issue to demote your permissions.
+
+              <sub>
+                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
+              </sub>
+              `
+            })
+
+      # Add a label to indicate that the user has been promoted.
+      - if: ${{ steps.validate.output.result == 'success' }}
+        name: Add Promoted Label
+        id: add-promoted-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: add
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            user-promoted
+
+      ###############################################################
+      # The following steps should only be run if the action fails.
+      ###############################################################
+
+      # Add a label to indicate that the promotion failed.
+      - if: ${{ failure() }}
+        name: Add Error Label
+        id: add-error-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: add
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            promotion-error
+
+      ###############################################################
+      # The following steps should always run.
+      ###############################################################
+
+      # Remove the label added previously.
+      - if: ${{ always() }}
+        name: Remove Running Label
+        id: remove-running-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: remove
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            automation-running

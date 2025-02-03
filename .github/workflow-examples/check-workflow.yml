@@ -1,0 +1,34 @@
+name: Check for Users to Demote
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Run once every hour.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  # TODO: Change this to the organization(s) that you support.
+  ALLOWED_ORGS: org1,org2
+
+jobs:
+  check:
+    name: Close Expired Issues
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository. This is required to access the issue form
+      # template and any custom validation logic.
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Check for Users to Demote
+        id: check-demote
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
+        with:
+          action: check_auto_demotion
+          admin_token: ${{ secrets.PAT }}
+          allowed_orgs: ${{ env.ALLOWED_ORGS }}

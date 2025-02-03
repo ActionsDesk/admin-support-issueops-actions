@@ -1,5 +1,0 @@
-org: NAME-OF-ORG
-repository: NAME-OF-REPOSITORY
-supportedOrgs:
-  - NAME-OF-THE-SUPPORTED-ORG
-reportPath: reports

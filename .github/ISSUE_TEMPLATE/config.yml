@@ -1,6 +1,11 @@
-blank_issues_enabled: false
-
+blank_issues_enabled: true
 contact_links:
-  - name: GitHub Professional Services
-    url: https://services.github.com/#contact
-    about: Contact GitHub Professional Services
+  - name: GitHub Community Support
+    url: https://github.com/orgs/community/discussions
+    about: Please ask and answer questions here.
+  - name: GitHub Security Bug Bounty
+    url: https://bounty.github.com/
+    about: Please report security vulnerabilities here.
+  - name: GitHub Expert Services
+    url: https://github.com/services#services-contact
+    about: Contact GitHub Expert Services

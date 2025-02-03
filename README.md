@@ -1,123 +1,161 @@
-# Administration support issue ops
+# Administration Support IssueOps
 
-This repository is an issue ops automation that allows the support team of an organization to use Issue Ops to request 
-temporarily admin access to the organization to perform tasks that require such permission. All the operations done during the process are reported as part of the audit log of the user. Closing the issue removes the permission.
+This repository contains automation that allows the support team of an
+organization to use [IssueOps](https://issue-ops.github.io/docs/) to request
+temporary elevation of their access to perform tasks that require administrative
+permission. All the operations done during the process are reported as part of
+the audit log of the user. Closing the issue removes the permission.
 
-## Automation
+[![Code Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
-### Instructions
+## v2 Migration
 
-To request the permission:
-- Open an issue using the template provided in this repository The fields are:
-  - **Organization:** the name of the organization where you want to be promoted. See below the [list of supported organizations](#supported-organizations). 
-  - **Description:** a description explaining why this request is raised is required. Write it in a single line 
-  - **Ticket:** ID of the ticket in your support system
-  - **Duration:** duration in hours. The minimum is 1 and the maximum is 8.
-  - See below an example with a template filled in
-    ```markdown
-    Organization: my-org
-    Description: A user requires to be added to a team and nobody else can give him access
-    Ticket: 123456
-    Duration: 2
-    ```
-- Fill in all the details but don't modify the template
-- Once the issue is created an automation will trigger providing you with a temporary access to perform the tasks
-- If you finish earlier than the time requested, close the issue to revoke your access immediately
+There are a number of major changes in the v2 release of this action.
+Specifically:
 
-⚠️ All the actions performed as an admin will be audited and added to the repository, so be cautious of the changes done in
-the organization
+- The CLI component has been removed in favor of using the
+  [`@github/local-action`](https://github.com/github/local-action) utility
+- The action is now using Node.js v20
+- The action inputs have been updated to not require multiple runs to parse and
+  then invoke the correct command
 
-> The duration requested will be approximate and has a ~1h error. We recommend to close the issue when the task is completed.
-
-### Supported organizations
-
-| Organization name | 
-|-------------------|
-| Add your supported organizations here |
-
+When migrating, please refer to the
+[example workflows](./.github/workflow-examples) for the correct usage of the
+action.
 
 ## Setup
 
-To setup this repository in your organization follow this steps:
-- Create a `Personal Access Token` with the `admin:org` write permission of a machine account
-- Add an actions secret called `PAT` in the repository containing the token. This token should have as permissions:
-  - `admin:org`
-  - `repo`
-- Duplicate the `config.example.yml` file calling it `config.yml` and edit the parameters to match your needs
+To use this action in your own organization(s), follow the below steps:
 
-| Param name | Description |
-|------------|-------------|
-| org        | The name of the organization where this automation is located |
-| repository | The name of the repository where this automation is located |
-| supportedOrgs | The name of the organizations where the `PAT` provided can be used. As a minimum it should have the current org |
-| reportPath | The name of the path where the automation will store and commit the reports. If you change this value should change it also in [the workflow `mkdir` command](./.github/workflows/manual-demotion-workflow.yml)
+1. Create a
+   [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
+   with `admin:org` and `repo` write permissions
 
-- Set a schedule for the cronjob on [`provisioning-check.yml`](./.github/workflows/provisioning-check.yml). The commented one is set to run every hour
-- Enable actions in the repository
+   > [!NOTE]
+   >
+   > It is **highly** recommended to use a machine user for this purpose, not a
+   > personal account.
 
-As this automation provides admin access to organizations, you may only want certain teams to be able to fill issues in. To do so:
-- Enable branch protection rules so only certain people/automations can push to the repository
-  - Restrict who can push to matching branches: add the bot
-g- Set the permissions to this repository to `read` for the teams you want to be able to create issues to upgrade
-- Make sure this repository is has `private` visibility and not `internal`, otherwise everyone in your org will be able to
-create issues in it causing a security concern.
-- Copy the contents from `.github/workflow-templates` to `.github/workflows` so you can start using the templates provided. You can modify them to your needs.
+1. Clone this repository into your organization
+1. In your cloned repository, create a
+   [GitHub Actions secret](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
+   named `PAT` using the token you created previously
+1. Move the following workflow files from the `.github/workflow-examples/`
+   directory to the `.github/workflows/` directory:
+   - [`check-workflow.yml`](./.github/workflows/check-workflow.yml)
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
+   - [`promotion-workflow.yml`](./.github/workflows/promotion-workflow.yml)
+1. Update the `DEMOTION_ERROR_NOTIFY` environment variable in the following
+   workflow files:
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
+1. Update the `ALLOWED_ORGS` environment variable in the following workflow
+   files:
+
+   - [`check-workflow.yml`](./.github/workflows/check-workflow.yml)
+   - [`demotion-workflow.yml`](./.github/workflows/demotion-workflow.yml)
+   - [`promotion-workflow.yml`](./.github/workflows/promotion-workflow.yml)
+
+   This should be see to a comma-separated list of the organizations where you
+   want to allow to use this automation (and the `PAT` you created can acess)
+
+   ```yaml
+   env:
+     ALLOWED_ORGS: 'octo-org,octo-org2'
+   ```
+
+1. Commit and push the changes to your repository
+1. [Enable GitHub Actions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
+   in the repository
+
+   As this automation provides admin access to organizations, you may only want
+   certain teams to be able to fill issues in.
+
+1. Enable
+   [repositorty rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
+   so only certain users can access the repository
+1. Grant `read` permission to any users or teams who will need to be able to
+   create issues in the repository
+1. Set the repository visibility to `private`, not `internal`
+
+## Automation
+
+To request the permission:
+
+1. Open an issue using the
+   [template](https://github.com/ActionsDesk/admin-support-issueops-actions/issues/new?template=request_admin_permission.yml)
+   provided in this repository
+
+   | Field        | Description                                       |
+   | ------------ | ------------------------------------------------- |
+   | Organization | Organization where you want to be promoted        |
+   | Description  | Expanation of why this request is being submitted |
+   | Ticket       | ID of a related ticket in your support system     |
+   | Duration     | Duration in hours that you need the permission    |
+
+   The completed form will look like the following:
+
+   ```markdown
+   ### Organization
+
+   octo-org
+
+   ### Description
+
+   A user requires to be added to a team and nobody else can give him access
+
+   ### Ticket
+
+   1234
+
+   ### Duration
+
+   1
+   ```
+
+1. Once the issue is created, a GitHub Actions workflow will trigger providing
+   you with temporary access to perform your task(s)
+1. Once you have completed your task(s), close the issue to revoke your access
+   automatically
+1. All the actions performed as an admin will be audited and added to the
+   repository, so be cautious of the changes done in the organization
+
+> [!IMPORTANT]
+>
+> The duration requested will be approximate and has a ~1h error. We recommend
+> to close the issue when the task is completed.
 
 ## Development
 
-### CLI usage
+### CLI Usage
 
-Since testing this integration locally with actions is a bit difficult, we can run the actions as a CLI
-for testing purposes. See the instructions of the CLI below:
+The [`@github/local-action`](https://github.com/github/local-action) utility can
+be used to test your action locally. It is a simple command-line tool that
+"stubs" (or simulates) the GitHub Actions Toolkit. This way, you can run your
+action locally without having to commit and push your changes to a repository.
 
-```
-$ npm start -- --help
-Options:
-  -v, --version                 Output the current version
-  -t, --admin-token <string>    the token to access the API (mandatory)
-  -a, --action <string>         the action to be executed
-   
-  action: parse_issue           Parse the body of an issue
-  -i, --issue-number <number>   the issue number where we are executing the operation
-   
-  action: promote_demote        Promote user to admin or demote to member
-  -u, --username <string>       the username to promote/demote
-  -r, --role <string>           the role to apply on the username [admin | member]
-   
-  action: demotion_report       Parse the body of an issue
-  -u, --username <string>       the username that was promoted/demoted
-  -d, --description <string>    activity description
-  -i, --issue-number <number>   the issue number where we are executing the operation
-  -s, --ticket <number>         the ticket number in your support system
-  -dd, --demotion-date <date>   demotion date example: 2021-03-12T10:36:36+00:00
-  -pd, --promotion-date <date>  promotion date example: 2021-03-12T09:36:36+00:00
-  -to, --target-org <date>      the target organization where the user was promoted
-   
-  -h, --help                    display help for command
+The `local-action` utility can be run in the following ways:
 
-```
+- Visual Studio Code Debugger
 
-### Integration setup
+  Make sure to review and, if needed, update
+  [`.vscode/launch.json`](./.vscode/launch.json)
 
-This integration requires a Personal Access Token with permissions in the orgs listed above. To use it, add the token as
-an Actions Secret with the name `PAT`.
+- Terminal/Command Prompt
 
-The integration is built on the following actions:
-- admin-support-cli: This is a CLI that is used in the workflows to execute the operations
-- (external) [action-add-labels@v1](https://github.com/actions-ecosystem/action-add-labels)
-- (external) [action-remove-labels@v1](https://github.com/actions-ecosystem/action-remove-labels)
-- (external) [github-script](https://github.com/actions/github-script)
+  ```bash
+  cd admin-support-cli
 
+  # npx local-action <action-yaml-path> <entrypoint> <dotenv-file>
+  npx local-action . src/main.ts .env
+  ```
 
-### Adding new operations
+You can provide a `.env` file to the `local-action` CLI to set environment
+variables used by the GitHub Actions Toolkit. For example, setting inputs and
+event payload data used by your action. For more information, see the example
+file, [`.env.example`](./admin-support-cli/.env.example), and the
+[GitHub Actions Documentation](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables).
 
-The actions in the workflows are executed using a CLI. This CLI has different actions based on the names. The actions supported are:
-- parse_issue
-- check_auto_demotion
-- demotion_report
-- promote_demote
-
-To develop new actions:
-- Create a new command in the [`actions`](./admin-support-cli/src/commands/actions) folder
-- Add the command to the [index file](./admin-support-cli/src/commands/actions/index.js) 
-- Implement the `getName` and `execute` functions. You can optionally add new validations implementing the `validate` function.
+Additionally, this `local-action` CLI can make use of mock webhook payloads. You
+can provide a JSON file path for the `GITHUB_EVENT_PATH` environment variable in
+the `.env` file. For a minimal example that can be used with this action, see
+[`issue_payload.example.json`](./admin-support-cli/issue_payload.example.json).

@@ -1,0 +1,190 @@
+name: Demote a User
+
+on:
+  issues:
+    types:
+      - closed
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  # TODO: Change this to the organization(s) that you support.
+  ALLOWED_ORGS: org1,org2
+  # TODO: Change this to the team you would like to notify if there is an error.
+  DEMOTION_ERROR_NOTIFY: '@org/team'
+
+jobs:
+  demote:
+    name: Promote @${{ github.event.issue.user.login }} to Member
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository. This is required to access the issue form
+      # template and any custom validation logic.
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      # Add a label to indicate that the automation is running.
+      - name: Add Running Label
+        id: add-running-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: add
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            automation-running
+
+      # Parse the issue body into JSON.
+      - name: Parse Issue
+        id: parser
+        uses: issue-ops/parser@v4
+        with:
+          body: ${{ github.event.issue.body }}
+          issue-form-template: request_admin_permissions.yml
+          workspace: ${{ github.workspace }}
+
+      - name: Revoke Admin Access
+        id: revoke
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
+        with:
+          action: promote_demote
+          admin_token: ${{ secrets.PAT }}
+          allowed_orgs: ${{ env.ALLOWED_ORGS }}
+          parsed_issue: ${{ steps.parser.outputs.json }}
+          role: member
+          username: ${{ github.event.issue.user.login }}
+
+      - name: Set Demotion Date
+        id: set-demotion-date
+        run: |
+          DEMOTION_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "::set-output name=demotion_date::$DEMOTION_DATE"
+
+      # This is required to allow the audit logs to catch up.
+      - name: Sleep
+        id: sleep
+        run: |
+          sleep 30
+
+      - name: Generate Report
+        id: generate-report
+        uses: ActionsDesk/admin-support-issueops-actions/admin-support-cli@v2
+        with:
+          action: demotion_report
+          admin_token: ${{ secrets.PAT }}
+          allowed_orgs: ${{ env.ALLOWED_ORGS }}
+          demotion_date: ${{ steps.create_demotion_date.outputs.demotion_date }}
+          issue_number: ${{ github.event.issue.number }}
+          parsed_issue: ${{ steps.parser.outputs.json }}
+          promotion_date: ${{ github.event.issue.created_at }}
+          report_path: reports
+          username: ${{ github.event.issue.user.login }}
+
+      - name: Persist the audit of the demotion
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: reports
+          message:
+            'Demotion Report - Issue #${{ github.event.issue.number }} ${{
+            github.event.issue.user.login }}'
+          push: true
+
+      ##################################################################
+      # The following steps should be run if the action was successful.
+      ##################################################################
+
+      - if: ${{ success() }}
+        name: Add a Comment
+        id: add-comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### :white_check_mark: Request Complete
+
+              The user **@${{github.event.issue.user.login}}**'s temporary admin access has been revoked has been demoted from ${{ steps.revoke.outputs.organization }}.
+
+              This issue will be locked to avoid new interactions.
+
+              <sub>
+                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
+              </sub>
+              `
+            })
+
+            await github.rest.issues.lock({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
+
+      # Add a label to indicate that the user has been demoted.
+      - if: ${{ success() }}
+        name: Add Promoted Label
+        id: add-promoted-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: add
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            user-demoted
+
+      # Remove the user-promoted label.
+      - if: ${{ success() }}
+        name: Remove Promotion Label
+        id: remove-promotion-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: remove
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            user-promoted
+            automation-running
+
+      ##################################################################
+      # The following steps should be run if the action failed.
+      ##################################################################
+
+      - if: ${{ failure() }}
+        name: Notify the Team
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### :x: Demotion Failed
+
+              CC: ${{ env.DEMOTION_ERROR_NOTIFY }}
+
+              Please investigate to ensure the user's access has been correctly revoked.
+
+              <sub>
+                Find details of the automation <a href="https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${{github.run_id}}">here</a>.
+              </sub>
+              `
+            })
+
+      ##################################################################
+      # The following steps should always run.
+      ##################################################################
+
+      # Remove the automation label.
+      - if: ${{ always() }}
+        name: Remove Automation Label
+        id: remove-automation-label
+        uses: issue-ops/labeler@v2
+        with:
+          action: remove
+          issue_number: ${{ github.event.issue.number }}
+          labels: |
+            automation-running
