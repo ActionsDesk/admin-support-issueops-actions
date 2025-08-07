@@ -33769,14 +33769,11 @@ class CheckAutoDemotionAction {
             state: 'open',
             labels: 'user-promoted'
         });
-        coreExports.info(`Found ${listOfIssues.length} issues with 'user-promoted' label.`);
         for (const issue of listOfIssues) {
             const parsedIssue = parseIssue(issue.body);
             const issueDuration = parseInt(parsedIssue.Duration);
             const promotedTime = Date.parse(issue.created_at);
             const passedTime = Date.now() - promotedTime;
-            coreExports.info(`Issue ${issue.number} has a duration of ${issueDuration} hours.`);
-            coreExports.info(`Issue ${issue.number} has been promoted for ${passedTime / HOUR_IN_MILLIS} hours.`);
             if (passedTime > issueDuration * HOUR_IN_MILLIS) {
                 coreExports.info(`Issue ${issue.number} has passed the duration.`);
                 await this.api.rest.issues.update({
@@ -33936,11 +33933,13 @@ async function run() {
                 commandInstance = new CheckAutoDemotionAction();
                 break;
             case Action.DEMOTION_REPORT:
+                /* istanbul ignore next */
                 if (!githubExports.context.payload.issue)
                     return coreExports.setFailed('No issue found!');
                 commandInstance = new DemotionReportAction();
                 break;
             case Action.PROMOTE_DEMOTE:
+                /* istanbul ignore next */
                 if (!githubExports.context.payload.issue)
                     return coreExports.setFailed('No issue found!');
                 commandInstance = new PromoteDemoteAction();

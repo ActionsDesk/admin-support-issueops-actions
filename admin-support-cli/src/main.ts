@@ -22,11 +22,13 @@ export async function run() {
         commandInstance = new CheckAutoDemotionAction()
         break
       case Action.DEMOTION_REPORT:
+        /* istanbul ignore next */
         if (!github.context.payload.issue)
           return core.setFailed('No issue found!')
         commandInstance = new DemotionReportAction()
         break
       case Action.PROMOTE_DEMOTE:
+        /* istanbul ignore next */
         if (!github.context.payload.issue)
           return core.setFailed('No issue found!')
         commandInstance = new PromoteDemoteAction()

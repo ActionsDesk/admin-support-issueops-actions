@@ -78,7 +78,7 @@ describe('CheckAutoDemotionAction', () => {
         }
       ])
       issueParser.parseIssue.mockReturnValueOnce({
-        duration: '1'
+        Duration: '1'
       })
 
       const check = new CheckAutoDemotionAction()
