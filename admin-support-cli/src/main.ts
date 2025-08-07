@@ -22,11 +22,13 @@ export async function run() {
         commandInstance = new CheckAutoDemotionAction()
         break
       case Action.DEMOTION_REPORT:
-        if (!github.context.payload.issue) return core.setFailed('No issue found!')
+        if (!github.context.payload.issue)
+          return core.setFailed('No issue found!')
         commandInstance = new DemotionReportAction()
         break
       case Action.PROMOTE_DEMOTE:
-        if (!github.context.payload.issue) return core.setFailed('No issue found!')
+        if (!github.context.payload.issue)
+          return core.setFailed('No issue found!')
         commandInstance = new PromoteDemoteAction()
         break
       default:
@@ -60,7 +62,6 @@ export async function run() {
         `
       })
     }
-    
 
     core.debug(`Exit Code: ${process.exitCode}`)
     return core.setFailed('An error occurred running the command!')

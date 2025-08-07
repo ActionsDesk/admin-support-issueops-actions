@@ -40,9 +40,13 @@ export class CheckAutoDemotionAction implements Command {
       const issueDuration = parseInt(parsedIssue.Duration as string)
       const promotedTime = Date.parse(issue.created_at)
       const passedTime = Date.now() - promotedTime
-      
-      core.info(`Issue ${issue.number} has a duration of ${issueDuration} hours.`)
-      core.info(`Issue ${issue.number} has been promoted for ${passedTime / HOUR_IN_MILLIS} hours.`)
+
+      core.info(
+        `Issue ${issue.number} has a duration of ${issueDuration} hours.`
+      )
+      core.info(
+        `Issue ${issue.number} has been promoted for ${passedTime / HOUR_IN_MILLIS} hours.`
+      )
 
       if (passedTime > issueDuration * HOUR_IN_MILLIS) {
         core.info(`Issue ${issue.number} has passed the duration.`)
