@@ -33771,7 +33771,7 @@ class CheckAutoDemotionAction {
         });
         for (const issue of listOfIssues) {
             const parsedIssue = parseIssue(issue.body);
-            const issueDuration = parseInt(parsedIssue.duration);
+            const issueDuration = parseInt(parsedIssue.Duration);
             const promotedTime = Date.parse(issue.created_at);
             const passedTime = Date.now() - promotedTime;
             if (passedTime > issueDuration * HOUR_IN_MILLIS) {
@@ -33923,9 +33923,6 @@ class CommandDoesNotExistError extends Error {
 }
 
 async function run() {
-    /* istanbul ignore next */
-    if (!githubExports.context.payload.issue)
-        return coreExports.setFailed('No issue found!');
     const inputs = getInputs();
     try {
         coreExports.info('Running Action with input:');
@@ -33936,9 +33933,15 @@ async function run() {
                 commandInstance = new CheckAutoDemotionAction();
                 break;
             case Action.DEMOTION_REPORT:
+                /* istanbul ignore next */
+                if (!githubExports.context.payload.issue)
+                    return coreExports.setFailed('No issue found!');
                 commandInstance = new DemotionReportAction();
                 break;
             case Action.PROMOTE_DEMOTE:
+                /* istanbul ignore next */
+                if (!githubExports.context.payload.issue)
+                    return coreExports.setFailed('No issue found!');
                 commandInstance = new PromoteDemoteAction();
                 break;
             default:
@@ -33953,20 +33956,22 @@ async function run() {
     catch (error) {
         coreExports.error(error);
         // Report the error in a comment
-        const octokit = githubExports.getOctokit(inputs.adminToken);
-        await octokit.rest.issues.createComment({
-            owner: githubExports.context.repo.owner,
-            repo: githubExports.context.repo.repo,
-            issue_number: githubExports.context.payload.issue.number,
-            body: dedent `### :exclamation: An Error Occurred :exclamation:
+        if (githubExports.context.payload.issue) {
+            const octokit = githubExports.getOctokit(inputs.adminToken);
+            await octokit.rest.issues.createComment({
+                owner: githubExports.context.repo.owner,
+                repo: githubExports.context.repo.repo,
+                issue_number: githubExports.context.payload.issue.number,
+                body: dedent `### :exclamation: An Error Occurred :exclamation:
 
-      ${error.message}
+        ${error.message}
 
-      <sub>
-      Details: <a href="https://github.com/${githubExports.context.repo.owner}/${githubExports.context.repo.repo}/actions/runs/${coreExports.getInput('run_id')}">here</a>.
-      </sub>
-      `
-        });
+        <sub>
+        Details: <a href="https://github.com/${githubExports.context.repo.owner}/${githubExports.context.repo.repo}/actions/runs/${coreExports.getInput('run_id')}">here</a>.
+        </sub>
+        `
+            });
+        }
         coreExports.debug(`Exit Code: ${process.exitCode}`);
         return coreExports.setFailed('An error occurred running the command!');
     }

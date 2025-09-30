@@ -35,7 +35,7 @@ export class CheckAutoDemotionAction implements Command {
     for (const issue of listOfIssues) {
       const parsedIssue = parseIssue(issue.body!)
 
-      const issueDuration = parseInt(parsedIssue.duration as string)
+      const issueDuration = parseInt(parsedIssue.Duration as string)
       const promotedTime = Date.parse(issue.created_at)
       const passedTime = Date.now() - promotedTime
 

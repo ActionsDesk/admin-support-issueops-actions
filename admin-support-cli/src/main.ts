@@ -10,9 +10,6 @@ import { CommandDoesNotExistError } from './exceptions/CommandDoesNotExistError.
 import { getInputs } from './inputs.js'
 
 export async function run() {
-  /* istanbul ignore next */
-  if (!github.context.payload.issue) return core.setFailed('No issue found!')
-
   const inputs = getInputs()
 
   try {
@@ -25,9 +22,15 @@ export async function run() {
         commandInstance = new CheckAutoDemotionAction()
         break
       case Action.DEMOTION_REPORT:
+        /* istanbul ignore next */
+        if (!github.context.payload.issue)
+          return core.setFailed('No issue found!')
         commandInstance = new DemotionReportAction()
         break
       case Action.PROMOTE_DEMOTE:
+        /* istanbul ignore next */
+        if (!github.context.payload.issue)
+          return core.setFailed('No issue found!')
         commandInstance = new PromoteDemoteAction()
         break
       default:
@@ -45,20 +48,22 @@ export async function run() {
     core.error(error)
 
     // Report the error in a comment
-    const octokit = github.getOctokit(inputs.adminToken)
-    await octokit.rest.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.payload.issue.number,
-      body: dedent`### :exclamation: An Error Occurred :exclamation:
+    if (github.context.payload.issue) {
+      const octokit = github.getOctokit(inputs.adminToken)
+      await octokit.rest.issues.createComment({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: github.context.payload.issue.number,
+        body: dedent`### :exclamation: An Error Occurred :exclamation:
 
-      ${error.message}
+        ${error.message}
 
-      <sub>
-      Details: <a href="https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${core.getInput('run_id')}">here</a>.
-      </sub>
-      `
-    })
+        <sub>
+        Details: <a href="https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${core.getInput('run_id')}">here</a>.
+        </sub>
+        `
+      })
+    }
 
     core.debug(`Exit Code: ${process.exitCode}`)
     return core.setFailed('An error occurred running the command!')
